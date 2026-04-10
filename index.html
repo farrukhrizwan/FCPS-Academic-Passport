@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FCPS Academic Passport</title>
+    
+    <!-- PWA Meta Data -->
+    <meta name="theme-color" content="#1a237e">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+   <link rel="manifest" href="manifest.json">
+   <!-- PWA & Mobile Meta -->
+    <meta name="theme-color" content="#1a237e">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="logo.png">
+    
+    <link href="https://googleapis.com" rel="stylesheet">
+
+    <style>
+		* {
+    box-sizing: border-box;
+}
+        :root { --primary: #1a237e; --accent: #ffd700; --card-bg: rgba(255, 255, 255, 0.95); }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%); background-attachment: fixed; margin: 0; color: #333; overflow-x: hidden; }
+        header { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); color: white; padding: 20px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
+        .logo-container img { width: 70px; height: 70px; border-radius: 50%; border: 1px ; margin-bottom: 2px; }
+        h1 { margin: 0; font-size: 18px; text-transform: uppercase; }
+        h2 { margin: 0; font-size: 12px; color: var(--accent); font-weight: 300; }
+        .search-box { padding: 15px; text-align: center; position: sticky; top: 110px; z-index: 10; }
+        #vocabSearch { width: 85%; max-width: 400px; padding: 12px 20px; border-radius: 25px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); outline: none; }
+        .container { width: 100%; padding: 10px 15px 100px 15px; max-width: 800px; margin: auto; }
+        .grade-card { background: var(--card-bg); border-radius: 12px; margin-bottom: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+        .grade-header { padding: 15px 20px; display: flex; justify-content: space-between; cursor: pointer; font-weight: 600; color: var(--primary); border-bottom: 1px solid #eee; }
+        .word-grid { display: none; padding: 15px; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; }
+        .word-tag { background: #f8f9fa; padding: 6px; border-radius: 6px; font-size: 14px; text-align: center; border: 1px solid #eee; transition: 0.2s; }
+        .word-tag:hover { background: var(--accent); color: var(--primary); font-weight: bold; }
+        .show { display: grid !important; }
+        footer { position: fixed; bottom: 0; width: 100%; background: white; color: black; padding: 10px 0; text-align: center; font-size: 10px; border-top: 1px solid var(--accent); }
+    </style>
+	<script src="/pwa-register.js" defer></script>
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="logo.png" alt="FCPS&C Logo" onerror="this.src='https://placeholder.com'">
+    </div>
+    <h1>FC Public School and College Dera Bugti</h1>
+	 <h1>FCPS Academic Passport</h1>
+    <h2>High Frequency Vocabulary list</h2>
+</header>
+
+<div class="search-box">
+    <input type="text" id="vocabSearch" placeholder="Search words..." onkeyup="filterWords()">
+</div>
+
+<div class="container" id="mainContainer">
+    <!-- Categories will be injected here by JavaScript -->
+</div>
+
+<div id="installBanner" style="display:none; background: var(--accent); padding: 15px; text-align: center; position: fixed; bottom: 60px; width: 100%; z-index: 999; box-shadow: 0 -2px 10px rgba(0,0,0,0.2);">
+    <span style="color: var(--primary); font-weight: bold; margin-right: 10px;">Install FCPS App for Offline Use?</span>
+    <button id="installBtn" style="background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer;">Install</button>
+</div>
+
+<footer>
+    &copy; 2023 Farrukh Barlas & FCPS&C Dera Bugti. <br> Resilient Academic Excellence Framework.
+	<a href="about"target="_blank" rel="noopener">About</a>
+</footer>
+
+<script>
+    const vocabulary = {
+        "KG Section": ["I", "Me", "My", "You", "Boy", "Girl", "Teacher", "Friend", "Baby", "Father", "Mother", "Brother", "Sister", "Name", "Man", "Woman", "Home", "Love", "Happy", "Smile", "Book", "Pen", "Pencil", "Chair", "Table", "Bag", "Paper", "Bottle", "Door", "Window", "Look", "Listen", "Sit", "Stand", "Run", "Stop", "Go", "Come", "Eat", "Drink", "Sleep", "Play", "Sing", "Dance", "Draw", "Write", "Read", "Open", "Close", "Give", "Head", "Hand", "Foot", "Eye", "Ear", "Nose", "Mouth", "Hair", "Face", "Sun", "Moon", "Star", "Sky", "Tree", "Flower", "Bird", "Cat", "Dog", "Cow", "Goat", "Milk", "Water", "Food", "Apple", "Ball", "Car", "Bus", "Road", "Rain", "Wind", "Red", "Blue", "Green", "Yellow", "Black", "White", "Big", "Small", "Hot", "Cold", "Yes", "No", "Up", "Down", "In", "Out", "One", "Two", "Three", "Ten"],
+        
+        "Grades 1-4": ["The", "And", "Are", "Was", "Were", "With", "They", "Their", "There", "This", "That", "What", "When", "Where", "Which", "Who", "How", "Many", "Some", "Very", "Also", "From", "Into", "Back", "After", "Before", "Once", "Upon", "Every", "Under", "Over", "Between", "Again", "Always", "Never", "Small", "Large", "Great", "Little", "About", "Because", "Through", "Place", "Thing", "Sentence", "Letter", "Word", "Line", "Page", "Story", "Ask", "Answer", "Bring", "Carry", "Clean", "Close", "Count", "Drink", "Drive", "Eat", "Fall", "Find", "Finish", "Give", "Grow", "Help", "Hold", "Jump", "Keep", "Know", "Learn", "Listen", "Look", "Make", "Open", "Play", "Pull", "Push", "Read", "Ride", "Run", "Say", "See", "Show", "Sing", "Sit", "Sleep", "Smile", "Speak", "Stand", "Stop", "Take", "Tell", "Think", "Try", "Use", "Wait", "Walk", "Watch", "Write", "Air", "Animal", "Body", "Bread", "Brother", "City", "Class", "Cold", "Country", "Day", "Dinner", "Door", "Earth", "Father", "Field", "Fire", "Flower", "Food", "Friend", "Garden", "Grass", "Ground", "Hand", "Head", "Home", "Hot", "House", "Light", "Lunch", "Money", "Morning", "Mother", "Name", "Night", "Paper", "People", "Plant", "Rain", "River", "Road", "School", "Sister", "Sky", "Sun", "Table", "Time", "Town", "Tree", "Water", "Year", "Add", "Alive", "Below", "Above", "Circle", "Color", "Differs", "Divide", "Dry", "Equal", "Fast", "First", "Last", "Hard", "Heavy", "High", "Kind", "Left", "Right", "Less", "More", "Long", "Short", "Low", "Measure", "Middle", "Most", "Next", "Number", "Part", "Pattern", "Point", "Question", "Quiet", "Round", "Same", "Shape", "Slow", "Soft", "Solid", "Sound", "Square", "Strong", "Summer", "Winter", "Total", "Unit", "Weight", "Whole", "Young"],
+
+        "Grades 5-7": [
+    "Absorb", "Adjust", "Adopt", "Arrange", "Avoid", "Browse", "Cause", "Collect", "Combine", "Connect", 
+    "Control", "Create", "Damage", "Decide", "Decrease", "Deliver", "Depend", "Design", "Destroy", "Develop", 
+    "Discover", "Divide", "Effect", "Escape", "Examine", "Exist", "Expect", "Explain", "Explore", "Fasten", 
+    "Follow", "Gather", "Handle", "Improve", "Increase", "Inform", "Invent", "Join", "Locate", "Manage", 
+    "Measure", "Notice", "Observe", "Organize", "Perform", "Prepare", "Prevent", "Produce", "Protect", "Reduce", 
+    "Active", "Ancient", "Average", "Awful", "Bold", "Brave", "Bright", "Calm", "Careful", "Central", 
+    "Common", "Complete", "Correct", "Curious", "Dangerous", "Deep", "Difficult", "Direct", "Eager", "Early", 
+    "Entire", "Equal", "Famous", "Favorite", "Final", "Foreign", "Fresh", "General", "Gentle", "Greedy", 
+    "Healthy", "Heavy", "Honest", "Huge", "Important", "Impossible", "Kind", "Large", "Lonely", "Loose", 
+    "Modern", "Narrow", "Natural", "Necessary", "Normal", "Opposite", "Ordinary", "Patient", "Perfect", "Pleasant", 
+    "Adult", "Amount", "Area", "Balance", "Blood", "Bottom", "Branch", "Center", "Climate", "Coast", 
+    "Condition", "Country", "Degree", "Desert", "Distance", "Earth", "Edge", "Energy", "Engine", "Environment", 
+    "Exercise", "Factory", "Field", "Flight", "Flower", "Force", "Forest", "Form", "Fuel", "Gas", 
+    "Grain", "Group", "Growth", "Habit", "Health", "Height", "Island", "Layer", "Level", "Liquid", 
+    "Material", "Metal", "Method", "Middle", "Mineral", "Mixture", "Motion", "Muscle", "Nation", "Object", 
+    "Actually", "Against", "Already", "Among", "Annual", "Appear", "Article", "Attempt", "Behavior", "Believe", 
+    "Beyond", "Business", "Capital", "Century", "Certain", "Chance", "Change", "Character", "Choose", "Citizen", 
+    "Claim", "Clear", "Compare", "Condition", "Consider", "Contain", "Continue", "Copy", "Course", "Court", 
+    "Cover", "Current", "Custom", "Daily", "Danger", "Decision", "Degree", "Demand", "Describe", "Detail", 
+    "Difference", "Direction", "Discuss", "Distance", "Duty", "Extreme", "Freedom", "History", "Journey", "Knowledge"
+	],
+
+        "Grade 8 Gateway": [
+    "Abbreviate", "Absorb", "Abundant", "Accelerate", "Accessible", "Accuracy", "Acknowledge", "Acquire", "Adaptation", "Adjacent", 
+    "Alternative", "Amplify", "Analogy", "Annual", "Anticipate", "Apparent", "Aspect", "Assemble", "Assert", "Assess", 
+    "Assign", "Assist", "Assume", "Atmosphere", "Attain", "Attribute", "Authentic", "Available", "Awareness", "Barrier", 
+    "Benefit", "Boundary", "Brief", "Capable", "Capacity", "Category", "Cease", "Challenge", "Chronological", "Clarify", 
+    "Coherent", "Coincide", "Collaborate", "Collapse", "Commence", "Commitment", "Communicate", "Compatible", "Compile", "Complement", 
+    "Complex", "Component", "Compound", "Comprehensive", "Comprise", "Compute", "Conceive", "Concentrate", "Concept", "Conclude", 
+    "Conduct", "Confirm", "Conflict", "Conform", "Consent", "Consequent", "Considerable", "Consist", "Constant", "Constraint", 
+    "Construct", "Consult", "Consume", "Contact", "Context", "Contradict", "Contrary", "Contrast", "Contribute", "Convert", 
+    "Coordinate", "Core", "Correspond", "Criteria", "Crucial", "Culture", "Currency", "Cycle", "Data", "Debate", 
+    "Decade", "Decline", "Deduce", "Define", "Definite", "Demonstrate", "Denote", "Deny", "Derive", "Design", 
+    "Detect", "Deviate", "Device", "Devote", "Differentiate", "Dimension", "Diminish", "Discrete", "Displace", "Display", 
+    "Dispose", "Distinct", "Distribute", "Diverse", "Document", "Domain", "Domestic", "Dominate", "Draft", "Duration", 
+    "Dynamic", "Economy", "Edit", "Element", "Eliminate", "Emerge", "Emphasis", "Enable", "Encounter", "Energy", 
+    "Enforce", "Enhance", "Enormous", "Ensure", "Entity", "Environment", "Equate", "Equip", "Equivalent", "Erode", 
+    "Error", "Establish", "Estate", "Estimate", "Ethic", "Ethnic", "Evaluate", "Eventual", "Evident", "Evolve", 
+    "Exceed", "Exclude", "Exhibit", "Expand", "Expert", "Explicit", "Exploit", "Export", "Expose", "External", 
+    "Extract", "Facilitate", "Factor", "Feature", "Federal", "Fee", "File", "Final", "Finance", "Finite", 
+    "Flexibility", "Fluctuate", "Focus", "Format", "Formula", "Forthcoming", "Found", "Foundation", "Framework", "Function", 
+    "Fund", "Fundamental", "Furthermore", "Gender", "Generate", "Generation", "Globe", "Goal", "Grade", "Grant", 
+    "Guarantee", "Guideline", "Hence", "Hierarchy", "Highlight", "Hypothesis", "Identical", "Identify", "Ideology", "Ignorant"
+	],
+
+
+        "Grade 10 Professional": ["Analyze", "Compare", "Contrast", "Describe", "Evaluate", "Identify", "Illustrate", "Interpret", "Justify", "Summarize","Predict", "Define", "Differentiate", "Elaborate", "Formulate", "Indicate", "Significance", "Hypothesis", "Evidence", "Conclusion", "Diagram", "Label", "Procedure", "Observation", "Variable", "Constant", "Formula", "Equation", "Sector", "Region", "Calculate", "Estimate", "Methodology", "Classification", "Sequence", "Verification", "Component", "Ratio", "Percentage", "Graph", "Structure", "Function", "Theory", "Law", "Reaction", "Process", "Analysis", "Data", "Source", "Context", "However", "Therefore", "Furthermore", "Consequently", "Moreover", "Despite", "Although", "Whereas", "Specifically", "Simultaneously", "Initially", "Gradually", "Essentially", "Otherwise", "Instead", "Alternatively", "Sufficient", "Adequate", "Relevant", "Appropriate", "Primary", "Secondary", "Major", "Minor", "Maximum", "Minimum", "Inversely", "Proportional", "Significantly", "Particularly", "Notably", "Relatively", "Nonetheless", "Conversely", "Hence", "Thus", "In addition", "Briefly", "Ultimately", "Virtually", "Fundamental", "Universal", "Explicit", "Implicit", "Consistent", "Logical", "Objective", "Subjective", "Perspective", "Argument", "Ambition", "Capability", "Conflict", "Cooperate", "Deadline", "Efficient", "Ethics", "Flexible", "Implement", "Initiative","Leadership", "Objective", "Priority", "Professional", "Punctual", "Responsibility", "Skill", "Technical", "Vacancy", "Application","Salary", "Experience", "Qualification", "Reference", "Training", "Apprentice", "Interview", "Career", "Contract", "Promotion","Colleague", "Strategy", "Achievement", "Management", "Organization", "Dedication", "Integrity", "Communication", "Teamwork", "Problem-solving","Adaptability", "Negotiation", "Networking", "Entrepreneur", "Performance", "Feedback", "Reliability", "Ambition", "Motivation", "Discipline", "Agriculture", "Environment", "Pollution", "Resources", "Sustainable", "Technology", "Economy", "Society", "Civic", "Function","Structure", "Component", "Process", "Evolution", "Diversity", "Stability", "Crisis", "Solution", "Impact", "Influence","Global", "Local", "Urban", "Rural", "Development", "Infrastructure", "Government", "Democracy", "Finance", "Investment","Commerce", "Industry", "Digital", "Automation", "Innovation", "Efficiency", "Production", "Distribution", "Consumption", "Capital","Labor", "Market", "Export", "Import", "Trade", "Humanity", "Ethics", "Morality", "Justice", "Equality","Rights", "Welfare", "Conflict", "Resolution", "Prosperity", "Legacy", "Heritage", "Standard", "Policy", "Reform"],
+
+    };
+
+    const container = document.getElementById('mainContainer');
+
+    // Build the UI
+    Object.keys(vocabulary).forEach((grade, index) => {
+        const id = `grade${index}`;
+        const card = document.createElement('div');
+        card.className = 'grade-card';
+        card.innerHTML = `
+            <div class="grade-header" onclick="toggle('${id}')">${grade} <span>+</span></div>
+            <div id="${id}" class="word-grid">
+                ${vocabulary[grade].map(word => `<div class="word-tag">${word}</div>`).join('')}
+            </div>
+        `;
+        container.appendChild(card);
+    });
+
+    function toggle(id) {
+        const el = document.getElementById(id);
+        const span = el.previousElementSibling.querySelector('span');
+        el.classList.toggle('show');
+        span.innerText = el.classList.contains('show') ? '−' : '+';
+    }
+
+    function filterWords() {
+        const input = document.getElementById('vocabSearch').value.toLowerCase();
+        const tags = document.getElementsByClassName('word-tag');
+        for (let tag of tags) {
+            const isMatch = tag.innerText.toLowerCase().includes(input);
+            tag.style.display = isMatch ? "" : "none";
+            if (isMatch && input.length > 1) tag.parentElement.classList.add('show');
+        }
+    }
+	let deferredPrompt;
+		const installBanner = document.getElementById('installBanner');
+		const installBtn = document.getElementById('installBtn');
+
+	window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the default mini-infobar from appearing on mobile
+    e.preventDefault();
+    // Stash the event so it can be triggered later.
+    deferredPrompt = e;
+    // Update UI notify the user they can install the PWA
+    installBanner.style.display = 'block';
+
+    installBtn.addEventListener('click', () => {
+        // Hide the app provided install promotion
+        installBanner.style.display = 'none';
+        // Show the install prompt
+        deferredPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+            } else {
+                console.log('User dismissed the install prompt');
+            }
+            deferredPrompt = null;
+        });
+    });
+});
+
+// Hide banner if app is already installed
+	window.addEventListener('appinstalled', () => {
+    installBanner.style.display = 'none';
+		console.log('PWA was installed');
+});
+		// Register Service Worker for Offline Power & Install Button
+		if ('serviceWorker' in navigator) {
+		window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('Service Worker Registered'))
+            .catch(err => console.log('Service Worker Failed', err));
+    });
+}
+
+
+</script>
+</body>
+</html>

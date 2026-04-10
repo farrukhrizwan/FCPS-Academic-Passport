@@ -1,0 +1,22 @@
+{
+  "name": "FCPS Academic Passport",
+  "short_name": "FCPS Vocab",
+  "description": "1000 Essential English Words for FC Public School and College Dera Bugti",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1a237e",
+  "theme_color": "#1a237e",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
