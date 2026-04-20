@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "org.eu.fr.barlas.vocab.twa",
+        "sha256_cert_fingerprints": ["9C:E4:77:4B:43:6D:F1:0D:F2:4C:1A:6A:8E:FB:CE:CB:27:59:BF:29:DA:28:CF:A4:9F:9A:86:35:84:06:3D:FB"]
+      }
+    }]
